@@ -1,0 +1,30 @@
+# R
+.Rproj.user/
+.Rhistory
+.RData
+.Ruserdata
+*.Rproj
+.Renviron
+rsconnect/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Raw source data — do not commit, we bake them into data/baked.rds
+# which IS committed. Baking script is data-raw/bake_data.R.
+data/hcl_2024.csv
+data/constituencies.geojson
+data/constituencies.gpkg
+data/constituencies.json
+data/wards.geojson
+data/wards.gpkg
+data/PUT_FILES_HERE.txt
+
+# Keep the baked file — it's what the deployed app loads
+!data/baked.rds
+
+# Editor and perl backup files
+*.bak
+*~
+*.swp
