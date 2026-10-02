@@ -138,8 +138,14 @@ server <- function(input, output, session) {
   # Results after applying vote-share edits. When the targets equal
   # the baseline (user hasn't touched anything) this is the raw data;
   # otherwise it's rescaled.
+  # Frozen vote-share state: only updates when Run the count is pressed.
+  vote_share_state_applied <- reactiveVal(NULL)
+  observeEvent(input$run_model, {
+    vote_share_state_applied(vote_share_state())
+  }, ignoreNULL = FALSE)|> debounce(800)
+
   results_df <- reactive({
-    targets <- vote_share_state()
+    targets <- vote_share_state_applied()
     if (is.null(targets) ||
         shares_are_default(targets, baseline_shares())) {
       return(raw_results())
@@ -528,6 +534,7 @@ server <- function(input, output, session) {
     output$sankey <- networkD3::renderSankeyNetwork({
       d <- detail_count(); if (is.null(d)) return(NULL)
       sk <- sankey_from_irv(d$res, d$blocks, d$parties)
+      req(sk)  # single-round seats — nothing to draw
       colour_js <- paste0(
         "d3.scaleOrdinal().domain([",
         paste(shQuote(names(PARTY_COLOURS)), collapse = ","),
